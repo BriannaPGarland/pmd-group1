@@ -82,27 +82,28 @@ public final class StringUtil {
         }
 
         int l = 1;
-        for (int curOffset = 0; curOffset < offsetInclusive; curOffset++) {
-            // if we end up outside the string, then the line is undefined
-            if (curOffset >= len) {
-                return -1;
-            }
+        int curOffset = 0;
+        boolean isPrevCharCr = false;
 
+        while (curOffset < offsetInclusive && curOffset < len) {
             char c = charSeq.charAt(curOffset);
+
             if (c == '\n') {
                 l++;
+                isPrevCharCr = false;
             } else if (c == '\r') {
-                if (curOffset + 1 < len && charSeq.charAt(curOffset + 1) == '\n') {
-                    if (curOffset == offsetInclusive - 1) {
-                        // the CR is assumed to be on the same line as the LF
-                        return l;
-                    }
-                    curOffset++; // SUPPRESS CHECKSTYLE jump to after the \n
+                if (isPrevCharCr) {
+                    l++;
                 }
-                l++;
+                isPrevCharCr = true;
+            } else {
+                isPrevCharCr = false;
             }
+
+            curOffset++;
         }
-        return l;
+
+        return curOffset < offsetInclusive ? -1 : l;
     }
 
     /**
