@@ -420,94 +420,53 @@ public class DBURI {
      * @throws IOException
      */
     private void setFields() throws URISyntaxException, IOException {
-        if (url.startsWith("jdbc:")) {
-            // java.net.URI is intended for "normal" URLs
-            URI jdbcURI = new URI(getURL().substring(5));
-
-            LOG.debug("setFields - substr(jdbcURL,5):{}", getURL().substring(5));
-            dump("substr(jdbcURL,5)", jdbcURI);
-
-            // jdbc:subprotocol:subname
-            String[] uriParts = url.split(":");
-            for (String part : uriParts) {
-                LOG.trace("JDBCpart={}", part);
-            }
-
-            /*
-             * Expect jdbc : subprotocol [ : subname ] : connection details
-             * uriParts.length < 3 Error uriParts.length = 3 Driver information
-             * may be inferred from part[1] - the subprotocol uriParts.length >=
-             * 4 Driver information may be inferred from part[2]- the first part
-             * of the subname
-             */
-            if (3 == uriParts.length) {
-                subprotocol = uriParts[1];
-            } else if (4 <= uriParts.length) {
-                subprotocol = uriParts[1];
-                subnamePrefix = uriParts[2];
-            } else {
-                throw new URISyntaxException(getURL(), "Could not understand JDBC URL", 1);
-            }
-
-            LOG.debug("subprotocol={}'' subnamePrefix={}", subprotocol, subnamePrefix);
-
-            // Set values from DBType defaults
-            this.dbType = new DBType(subprotocol, subnamePrefix);
-
-            LOG.debug("DBType properties found at {} with {} properties.",
-                    dbType.getPropertiesSource(), dbType.getProperties().size());
-
-            LOG.trace("DBType properties are:- {}", dbType.getProperties());
-
-            if (null != dbType.getDriverClass()) {
-                this.driverClass = dbType.getDriverClass();
-            }
-
-            if (null != dbType.getCharacterSet()) {
-                this.characterSet = dbType.getCharacterSet();
-            }
-
-            if (null != dbType.getLanguages()) {
-                this.languages = dbType.getLanguages();
-            }
-
-            if (null != dbType.getSourceCodeTypes()) {
-                sourceCodeTypes = dbType.getSourceCodeTypes();
-            }
-
-            LOG.debug("DBType other properties follow  ...");
-
-            if (null != dbType.getProperties().getProperty("schemas")) {
-                schemasList = Arrays.asList(dbType.getProperties().getProperty("schemas").split(","));
-            }
-
-            if (null != dbType.getProperties().getProperty("sourcecodenames")) {
-                sourceCodeNames = dbType.getProperties().getProperty("sourcecodenames");
-            }
-
-            String returnType = dbType.getProperties().getProperty("returnType");
-            if (null != returnType) {
-                sourceCodeType = Integer.parseInt(returnType);
-            }
-
-            LOG.debug("DBType populating lists ");
-            // Populate the lists
-            if (null != sourceCodeNames) {
-                sourceCodeNamesList = Arrays.asList(sourceCodeNames.split(","));
-            }
-
-            if (null != languages) {
-                languagesList = Arrays.asList(languages.split(","));
-            }
-
-            if (null != sourceCodeTypes) {
-                sourceCodeTypesList = Arrays.asList(sourceCodeTypes.split(","));
-            }
-
-            LOG.debug("DBType lists generated");
+        if (!url.startsWith("jdbc:")) {
+            throw new URISyntaxException(getURL(), "Could not understand JDBC URL", 1);
         }
 
+        URI jdbcURI = new URI(getURL().substring(5));
+        LOG.debug("setFields - substr(jdbcURL,5):{}", getURL().substring(5));
+        dump("substr(jdbcURL,5)", jdbcURI);
+
+        String[] uriParts = url.split(":");
+        if (uriParts.length < 3 || uriParts.length >= 4) {
+            throw new URISyntaxException(getURL(), "Could not understand JDBC URL", 1);
+        }
+        subprotocol = uriParts[1];
+        if (uriParts.length >= 4) {
+            subnamePrefix = uriParts[2];
+        }
+        LOG.debug("subprotocol={}'' subnamePrefix={}", subprotocol, subnamePrefix);
+
+        this.dbType = new DBType(subprotocol, subnamePrefix);
+        LOG.debug("DBType properties found at {} with {} properties.",
+                dbType.getPropertiesSource(), dbType.getProperties().size());
+        LOG.trace("DBType properties are:- {}", dbType.getProperties());
+
+        populateDBTypeProperties(dbType);
+
+        LOG.debug("DBType lists generated");
     }
+
+    private void populateDBTypeProperties(DBType dbType) {
+        driverClass = dbType.getDriverClass();
+        characterSet = dbType.getCharacterSet();
+        languages = dbType.getLanguages();
+        sourceCodeTypes = dbType.getSourceCodeTypes();
+
+        String schemasProperty = dbType.getProperties().getProperty("schemas");
+        schemasList = schemasProperty != null ? Arrays.asList(schemasProperty.split(",")) : null;
+
+        sourceCodeNames = dbType.getProperties().getProperty("sourcecodenames");
+        sourceCodeNamesList = sourceCodeNames != null ? Arrays.asList(sourceCodeNames.split(",")) : null;
+
+        String returnType = dbType.getProperties().getProperty("returnType");
+        sourceCodeType = returnType != null ? Integer.parseInt(returnType) : 0;
+
+        languagesList = languages != null ? Arrays.asList(languages.split(",")) : null;
+        sourceCodeTypesList = sourceCodeTypes != null ? Arrays.asList(sourceCodeTypes.split(",")) : null;
+    }
+
 
     @Override
     public String toString() {
