@@ -1,6 +1,5 @@
-/*
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
+//BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+
 
 package net.sourceforge.pmd.reporting;
 
@@ -39,7 +38,7 @@ public interface Reportable {
     @Deprecated
     @DeprecatedUntil700
     default int getBeginLine() {
-        return getReportLocation().getStartPos().getLine();
+        return getReportLocation().getStartLine();
     }
 
 
@@ -51,7 +50,7 @@ public interface Reportable {
     @Deprecated
     @DeprecatedUntil700
     default int getEndLine() {
-        return getReportLocation().getEndPos().getLine();
+        return getReportLocation().getEndLine();
     }
 
 
@@ -63,7 +62,7 @@ public interface Reportable {
     @Deprecated
     @DeprecatedUntil700
     default int getBeginColumn() {
-        return getReportLocation().getStartPos().getColumn();
+        return getReportLocation().getStartColumn();
     }
 
 
@@ -75,9 +74,8 @@ public interface Reportable {
     @Deprecated
     @DeprecatedUntil700
     default int getEndColumn() {
-        return getReportLocation().getEndPos().getColumn();
+        return getReportLocation().getEndColumn();
     }
-
 
 
 }
