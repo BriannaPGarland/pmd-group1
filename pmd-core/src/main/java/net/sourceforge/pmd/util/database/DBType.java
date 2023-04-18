@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
@@ -270,62 +271,17 @@ public class DBType {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (!(obj instanceof DBType)) {
             return false;
         }
         DBType other = (DBType) obj;
-        if (characterSet == null) {
-            if (other.characterSet != null) {
-                return false;
-            }
-        } else if (!characterSet.equals(other.characterSet)) {
-            return false;
-        }
-        if (driverClass == null) {
-            if (other.driverClass != null) {
-                return false;
-            }
-        } else if (!driverClass.equals(other.driverClass)) {
-            return false;
-        }
-        if (languages == null) {
-            if (other.languages != null) {
-                return false;
-            }
-        } else if (!languages.equals(other.languages)) {
-            return false;
-        }
-        if (properties == null) {
-            if (other.properties != null) {
-                return false;
-            }
-        } else if (!properties.equals(other.properties)) {
-            return false;
-        }
-        if (propertiesSource == null) {
-            if (other.propertiesSource != null) {
-                return false;
-            }
-        } else if (!propertiesSource.equals(other.propertiesSource)) {
-            return false;
-        }
-        if (sourceCodeReturnType != other.sourceCodeReturnType) {
-            return false;
-        }
-        if (sourceCodeTypes == null) {
-            if (other.sourceCodeTypes != null) {
-                return false;
-            }
-        } else if (!sourceCodeTypes.equals(other.sourceCodeTypes)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(characterSet, other.characterSet) &&
+               Objects.equals(driverClass, other.driverClass) &&
+               Objects.equals(languages, other.languages) &&
+               Objects.equals(properties, other.properties) &&
+               Objects.equals(propertiesSource, other.propertiesSource) &&
+               sourceCodeReturnType == other.sourceCodeReturnType &&
+               Objects.equals(sourceCodeTypes, other.sourceCodeTypes);
     }
 
     /**
