@@ -118,7 +118,7 @@ public final class Slf4jSimpleConfigurationForAnt {
                     declaredField = XmlLogger.class.getDeclaredField("msgOutputLevel");
                 } else if (l instanceof RecorderEntry) {
                     declaredField = RecorderEntry.class.getDeclaredField("loglevel");
-                } else if ("org.gradle.api.internal.project.ant.AntLoggingAdapter".equals(l.getClass().getName())) {
+                } else if (l instanceof org.gradle.api.internal.project.ant.AntLoggingAdapter) {
                     return determineGradleLogLevel(project, l);
                 } else {
                     try {
