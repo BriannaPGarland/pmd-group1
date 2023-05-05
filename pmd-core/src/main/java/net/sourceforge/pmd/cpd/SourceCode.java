@@ -32,7 +32,7 @@ public class SourceCode {
             this.code = new SoftReference<>(load());
             return code.get();
         }
-
+//test
         /**
          * Loads a range of lines.
          *
@@ -78,11 +78,7 @@ public class SourceCode {
             try (BufferedReader reader = new BufferedReader(getReader())) {
                 int linesToRead = 1 + endLine - startLine; // +1 because endLine is inclusive
                 List<String> lines = new ArrayList<>(linesToRead);
-
-                // Skip lines until we reach the start point
-                for (int i = 0; i < startLine - 1; i++) {
-                    reader.readLine();
-                }
+            
 
                 String currentLine;
                 while ((currentLine = reader.readLine()) != null) {
