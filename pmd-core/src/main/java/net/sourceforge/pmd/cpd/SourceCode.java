@@ -78,10 +78,10 @@ public class SourceCode {
             try (BufferedReader reader = new BufferedReader(getReader())) {
                 int linesToRead = 1 + endLine - startLine; // +1 because endLine is inclusive
                 List<String> lines = new ArrayList<>(linesToRead);
-
+                String tempLine;
                 // Skip lines until we reach the start point
                 for (int i = 0; i < startLine - 1; i++) {
-                    reader.readLine();
+                    tempLine = reader.readLine();
                 }
 
                 String currentLine;
