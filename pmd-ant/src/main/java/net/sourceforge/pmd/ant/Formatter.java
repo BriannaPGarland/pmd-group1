@@ -44,6 +44,7 @@ public class Formatter {
     private final List<Parameter> parameters = new ArrayList<>();
     private Writer writer;
     private Renderer renderer;
+    private static final String ENCODING = "encoding";
 
     public void setShowSuppressed(boolean value) {
         this.showSuppressed = value;
@@ -74,12 +75,12 @@ public class Formatter {
     @Deprecated
     @InternalApi
     public void start(String baseDir) {
-
+        
         Properties properties = createProperties();
-
+        
         Charset charset;
         {
-            String s = (String) properties.get("encoding");
+            String s = (String) properties.get(ENCODING);
             if (null == s) {
 
                 if (toConsole) {
@@ -97,7 +98,7 @@ public class Formatter {
 
                 // Configures the encoding for the renderer.
                 final Parameter parameter = new Parameter();
-                parameter.setName("encoding");
+                parameter.setName(ENCODING);
                 parameter.setValue(charset.name());
                 parameters.add(parameter);
             } else {
@@ -234,7 +235,7 @@ public class Formatter {
 
     private static String getNativeConsoleEncoding() {
         try {
-            Object res = MethodUtils.invokeStaticMethod(Console.class, "encoding");
+            Object res = MethodUtils.invokeStaticMethod(Console.class, ENCODING);
             if (res instanceof String) {
                 return (String) res;
             }
