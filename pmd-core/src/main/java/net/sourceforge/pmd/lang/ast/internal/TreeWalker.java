@@ -127,8 +127,11 @@ final class TreeWalker {
         }
 
 
-        @Override
+       @Override
         public @NonNull Node next() {
+            if (!hasNext()) {
+            throw new NoSuchElementException("No more elements in the collection.");
+        }
             Node node = queue.removeFirst();
             enqueueChildren(node);
             isFirst = false;
